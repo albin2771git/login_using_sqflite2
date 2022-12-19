@@ -29,9 +29,20 @@ class _HomeScreenState extends State<HomeScreen> {
     // Loading the diary when the app starts
   }
 
-  static Future<List<Map<String, dynamic>>> getItem(int id) async {
-    final db = await Sql_Helper.db();
-    return db.query('items', where: "name", whereArgs: [id], limit: 1);
+  // static Future<List<Map<String, dynamic>>> getItem(int id) async {
+  //   final db = await Sql_Helper.db();
+  //   return db.query('items', where: "name", whereArgs: [id], limit: 1);
+  // }
+
+  // void delete(int id) async {
+  //   await Sql_Helper.Delete(id);
+  //   refreshdata();
+  // }
+  void delete(int id) async {
+    await Sql_Helper.deleteItem(id);
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('Sucessfully delete a user')));
+    refreshdata();
   }
 
   @override
@@ -55,6 +66,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               style:
                                   TextStyle(color: Colors.black, fontSize: 12),
                             ),
+                            trailing: IconButton(
+                                onPressed: () {
+                                  delete(signUpdata[index]['id']);
+                                },
+                                icon: Icon(Icons.delete)),
                           ),
                         ))));
   }

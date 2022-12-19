@@ -1,7 +1,11 @@
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:login_using_sqflite2/screens/HomeScreen.dart';
+import 'package:login_using_sqflite2/screens/secondScreen.dart';
+import 'package:login_using_sqflite2/screens/signUp.dart';
 import 'package:login_using_sqflite2/sql_helper.dart';
 
 class LoginPage extends StatefulWidget {
@@ -29,27 +33,27 @@ class _LoginPageState extends State<LoginPage> {
     final data = await Sql_Helper.getItems();
     setState(() {
       signUpdata = data;
+
       // isLoading = false;
     });
   }
 
-  void showform(int? id) async {
-    if (id != null) {
-      final existingData =
-          signUpdata.firstWhere((element) => element['id'] == id);
-      useremail.text = existingData['email'];
-      userpassword.text = existingData['password'];
+  void validationdata(String email, String password) async {
+    if (email == "albinad@" && password == '123456') {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    } else {
+      var datafetch = await Sql_Helper.validation(email, password);
+      if (datafetch.isNotEmpty) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SecondScreen()));
+        print('Login Success');
+      } else if (datafetch.isEmpty) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SignUp()));
+        print('Login faild');
+      }
     }
-    // if (useremail == signUpdata.contains((element) => element['email'] == id)) {
-    //   Navigator.pushReplacement(
-    //       context, MaterialPageRoute(builder: (context) => HomeScreen()));
-    // }
-  }
-
-  Future<void> getItem(int id) async {
-    await Sql_Helper.getItem(id);
-
-    refreshdata();
   }
 
   @override
@@ -68,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Text(
                     "Login",
                     style: TextStyle(
-                        color: Colors.cyan,
+                        color: Colors.deepPurple,
                         fontSize: 23,
                         fontWeight: FontWeight.bold),
                   ),
@@ -93,6 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 10,
                 ),
                 TextFormField(
+                  obscureText: true,
                   controller: userpassword,
                   decoration: InputDecoration(
                     label: Text("enter your password"),
@@ -113,11 +118,15 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      if (useremail.text == signUpdata.contains(useremail)) {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()));
+                      // if (useremail.text == useremailcheck) {
+                      //   Navigator.pushReplacement(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //           builder: (context) => HomeScreen()));
+                      // }
+                      final validate = formkey.currentState!.validate();
+                      if (validate) {
+                        validationdata(useremail.text, userpassword.text);
                       }
                     },
                     child: Text('Login'))

@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:login_using_sqflite2/screens/HomeScreen.dart';
+import 'package:login_using_sqflite2/screens/loginPage.dart';
 import 'package:login_using_sqflite2/screens/sucess.dart';
 import 'package:login_using_sqflite2/sql_helper.dart';
 
@@ -25,26 +26,12 @@ class _SignUpState extends State<SignUp> {
   //----------for loading animation when date fetching from database-------
   bool isLoading = true;
 
-  void refreshdata() async {
-    final data = await Sql_Helper.getItems();
-    setState(() {
-      signUpdata = data;
-      isLoading = false;
-    });
-  }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   refreshdata(); // Loading the diary when the app starts
-  // }
-
 //--------add item-----------//
   Future<void> addItem() async {
     await Sql_Helper.createItem(
         name.text, email.text, password.text, Conformpassword.text);
 
-    refreshdata();
+    // refreshdata();
   }
 
   bool viewPassword = true;
@@ -53,10 +40,6 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: Text('Login Using SqfLite'),
-      ),
       body: Form(
         key: formkey,
         child: Center(
@@ -64,7 +47,7 @@ class _SignUpState extends State<SignUp> {
           color: Colors.transparent,
           margin: EdgeInsets.all(20),
           width: 300,
-          height: 470,
+          height: 550,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListView(
@@ -78,7 +61,7 @@ class _SignUpState extends State<SignUp> {
                         style: TextStyle(
                             fontSize: 21,
                             fontWeight: FontWeight.bold,
-                            color: Colors.cyan),
+                            color: Colors.deepPurple),
                       )),
                 ),
                 Padding(
@@ -190,7 +173,29 @@ class _SignUpState extends State<SignUp> {
                         }
                       },
                       child: Text('Submit')),
-                )
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "OR",
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                    )),
+                SizedBox(
+                  height: 5,
+                ),
+                ElevatedButton(
+                    style: ButtonStyle(
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)))),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => LoginPage()));
+                    },
+                    child: Text('Login')),
               ],
             ),
           ),
