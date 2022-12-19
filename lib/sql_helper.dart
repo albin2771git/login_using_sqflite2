@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
 // ignore: camel_case_types
@@ -46,5 +47,35 @@ class Sql_Helper {
   static Future<List<Map<String, dynamic>>> getItems() async {
     final db = await Sql_Helper.db();
     return db.query('items', orderBy: 'id');
+  }
+
+  static Future<List<Map<String, dynamic>>> getItem(int id) async {
+    final db = await Sql_Helper.db();
+    return db.query('items', where: "id=?", whereArgs: [id], limit: 1);
+  }
+
+  //--------------------update--------------//
+  static Future<int> updateItems(int id, String name, String email,
+      String password, String Conformpassword) async {
+    final db = await Sql_Helper.db();
+    final signUpdata = {
+      'name': name,
+      'email': email,
+      'password': password,
+      'Conformpassword': Conformpassword,
+      'createdAt': DateTime.now().toString()
+    };
+    final result =
+        await db.update('items', signUpdata, where: "id=?", whereArgs: [id]);
+    return result;
+  }
+
+  static Future<void> deleteItem(int id) async {
+    final db = await Sql_Helper.db();
+    try {
+      await db.delete("items", where: "id=?", whereArgs: [id]);
+    } catch (err) {
+      debugPrint("Something went wrong when deleting an item:$err");
+    }
   }
 }
